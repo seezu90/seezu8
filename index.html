@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Birthday Experience ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Dancing+Script:wght@700&display=swap');
+
+        body {
+            margin: 0; padding: 0;
+            background: #050505;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; font-family: 'Poppins', sans-serif; overflow: hidden;
+        }
+
+        #card-container {
+            width: 85%; max-width: 360px;
+            background: white; border-radius: 30px;
+            min-height: 480px; padding: 30px;
+            box-shadow: 0 0 50px rgba(255, 77, 148, 0.6);
+            text-align: center; display: flex;
+            flex-direction: column; justify-content: center;
+            position: relative; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- Rainbow Typing Animation --- */
+        .typing-box {
+            font-size: 22px; font-weight: bold;
+            min-height: 120px; margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .char {
+            display: inline-block;
+            opacity: 0;
+            animation: bounceIn 0.4s forwards, colorFlow 3s infinite;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: translateY(20px) scale(0); opacity: 0; }
+            60% { transform: translateY(-10px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes colorFlow {
+            0% { color: #ff4d94; }
+            33% { color: #3a86ff; }
+            66% { color: #ffbe0b; }
+            100% { color: #ff4d94; }
+        }
+
+        /* --- Button Slide-in Animation --- */
+        .btn-container {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUpFade 0.8s forwards;
+            animation-delay: 1s; /* Sawal type hone ke baad dikhega */
+        }
+
+        @keyframes slideUpFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff4d94, #ff85a1);
+            color: white; border: none; padding: 15px; margin: 10px 0;
+            border-radius: 50px; font-weight: bold; width: 100%;
+            cursor: pointer; font-size: 16px; transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 77, 148, 0.4);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            animation: heartbeat 1s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1.05); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1.05); }
+        }
+
+        /* --- Card Styles --- */
+        .style-gold { border: 4px solid #D4AF37; background: #fff; box-shadow: 0 0 30px #D4AF37; }
+        .style-neon { background: #111; color: white; border: 2px solid #ff4d94; box-shadow: 0 0 20px #ff4d94; }
+        .style-fancy { border-radius: 80px 10px; background: #fff5f8; border: 3px dashed #ff4d94; }
+
+        /* --- Confetti --- */
+        .confetti {
+            position: absolute; width: 12px; height: 12px;
+            animation: fall 3s linear forwards;
+        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div id="card-container" class="style-fancy">
+        <div id="typing-area" class="typing-box"></div>
+        <div id="btn-wrapper" class="btn-container">
+            <div id="options-area"></div>
+        </div>
+    </div>
+
+    <script>
+        const data = [
+            { q: "Oye suno! Aaj ka din yaad hai na? 🫦", a1: "Mera Birthday! 👸", a2: "Tum batao 😉" },
+            { q: "Uff! Itni sundar smile... illegal hai! 🔥", a1: "Natural hai 😎", a2: "Tumhari wajah se 🙈" },
+            { q: "Kya main hamesha aapko aise hi tang karu? 🥺", a1: "Haan, hamesha! ❤️", a2: "Zindagi bhar ✅" },
+            { q: "Aapki aankhen... inmein poori duniya hai. 👀", a1: "Bacha lo phir 😉", a2: "Sachi? ❤️" },
+            { q: "Agar main aaj 1000 kisses doon toh? 💋", a1: "Kam hain! 😉", a2: "Mana kisne kiya? 🙈" },
+            { q: "Cake meetha hota hai ya aapki baatein? 🍭", a1: "Main zyada hoon! 💋", a2: "Dono! 😂" },
+            { q: "Taiyaar ho surprise ke liye? Ready? 🎁", a1: "Ek dum! 😍", a2: "Jaldi dikhao!" },
+            { q: "3.. 2.. 1.. HAPPY BIRTHDAY! 🎉", a1: "Wow! 😍", a2: "Love it! ❤️" }
+        ];
+
+        let step = 0;
+        let answers = [];
+
+        function typeText(text, cb) {
+            const container = document.getElementById('typing-area');
+            const wrapper = document.getElementById('btn-wrapper');
+            container.innerHTML = "";
+            wrapper.style.opacity = "0";
+            wrapper.style.transform = "translateY(30px)";
+
+            const chars = text.split("");
+            chars.forEach((char, i) => {
+                const span = document.createElement('span');
+                span.innerText = char === " " ? "\u00A0" : char;
+                span.className = "char";
+                span.style.animationDelay = (i * 0.06) + "s";
+                container.appendChild(span);
+            });
+
+            // Buttons show up after text finishes
+            setTimeout(() => {
+                wrapper.style.opacity = "1";
+                wrapper.style.transform = "translateY(0)";
+                if(cb) cb();
+            }, chars.length * 60 + 400);
+        }
+
+        function loadStep() {
+            const card = document.getElementById('card-container');
+            const optArea = document.getElementById('options-area');
+            
+            // Cycle styles
+            const styles = ["style-fancy", "style-neon", "style-gold"];
+            card.className = styles[step % 3];
+            
+            // Add a little card pop animation
+            card.style.transform = "scale(0.9)";
+            setTimeout(() => card.style.transform = "scale(1)", 100);
+
+            optArea.innerHTML = "";
+            typeText(data[step].q, () => {
+                optArea.appendChild(createBtn(data[step].a1));
+                optArea.appendChild(createBtn(data[step].a2));
+            });
+        }
+
+        function createBtn(txt) {
+            const b = document.createElement('button');
+            b.className = "btn";
+            b.innerText = txt;
+            b.onclick = () => {
+                answers.push({ q: data[step].q, a: txt });
+                step++;
+                if (step < data.length) loadStep();
+                else showFinal();
+            };
+            return b;
+        }
+
+        function showFinal() {
+            startConfetti();
+            const card = document.getElementById('card-container');
+            card.className = "style-gold";
+            card.innerHTML = `
+                <div style="font-family:'Dancing Script'; font-size:40px; color:#ff4d94; animation:bounceIn 1s forwards;">Happy Birthday! 🎂</div>
+                <p style="font-weight:bold; margin-top:20px;">Aap duniya ki sabse haseen ladki ho! ❤️</p>
+                <button class="btn" style="background:#333;" onclick="showSheet()">Show My Answers 📜</button>
+            `;
+        }
+
+        function showSheet() {
+            const card = document.getElementById('card-container');
+            card.style.overflowY = "auto";
+            let html = `<div style="background:#ff4d94; color:white; padding:10px; border-radius:10px; margin-bottom:15px;">📸 Take Screenshot!</div><div style="text-align:left; font-size:13px; color:#333;">`;
+            answers.forEach((item, i) => {
+                html += `<p><b>${i+1}. ${item.q}</b><br><span style="color:#ff4d94">Ans: ${item.a}</span></p>`;
+            });
+            html += `</div><button class="btn" onclick="location.reload()">Restart 🔄</button>`;
+            card.innerHTML = html;
+        }
+
+        function startConfetti() {
+            for(let i=0; i<60; i++) {
+                const c = document.createElement('div');
+                c.className = "confetti";
+                c.style.left = Math.random() * 100 + "vw";
+                c.style.background = ["#ff4d94","#3a86ff","#ffbe0b","#fb5607"][Math.floor(Math.random()*4)];
+                c.style.top = "-20px";
+                c.style.animationDelay = Math.random() * 2 + "s";
+                document.body.appendChild(c);
+            }
+        }
+
+        loadStep();
+    </script>
+</body>
+</html>
